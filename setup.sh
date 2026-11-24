@@ -10,18 +10,13 @@ set +a
 # Reminder to set the UID variable in .env if you haven't already. It needs to be the user you want to run docker as. Find what it should be by running "id -u" from that user's shell.
 
 # Make users and group
-sudo useradd sonarr -u $SONARR_UID
-sudo useradd radarr -u $RADARR_UID
-sudo useradd lidarr -u $LIDARR_UID
-sudo useradd mylar -u $MYLAR_UID
+sudo useradd bazarr -u $BAZARR_UID
 sudo useradd prowlarr -u $PROWLARR_UID
 sudo useradd qbittorrent -u $QBITTORRENT_UID
-sudo useradd jackett -u $JACKETT_UID
-sudo useradd plex -u $PLEX_UID
+sudo useradd radarr -u $RADARR_UID
 sudo useradd sabnzbd -u $SABNZBD_UID
-sudo useradd bazarr -u $BAZARR_UID
-sudo useradd audiobookshelf -u $AUDIOBOOKSHELF_UID
-sudo useradd sportarr -u $SPORTARR_UID
+sudo useradd sonarr -u $SONARR_UID
+
 sudo groupadd mediacenter -g $MEDIACENTER_GID
 
 # Adds current user to the mediacenter group. This is recommended so that you can still have access to files inside the ezarr folder structure for manual control.
@@ -30,45 +25,32 @@ sudo usermod -a -G mediacenter $USER
 # When you add the user to the group the changes don't take effect immediately. 
 # You can force them by running "sudo newgrp mediacenter" but that won't always work and it's better to just reboot after the script finishes running.
 
-# adds all the service users to the group 
-sudo usermod -a -G mediacenter sonarr
-sudo usermod -a -G mediacenter radarr
-sudo usermod -a -G mediacenter lidarr
-sudo usermod -a -G mediacenter mylar
+# adds all the service users to the group
+sudo usermod -a -G mediacenter bazarr
 sudo usermod -a -G mediacenter prowlarr
 sudo usermod -a -G mediacenter qbittorrent
-sudo usermod -a -G mediacenter jackett
-sudo usermod -a -G mediacenter plex
+sudo usermod -a -G mediacenter radarr
 sudo usermod -a -G mediacenter sabnzbd
-sudo usermod -a -G mediacenter bazarr
-sudo usermod -a -G mediacenter audiobookshelf
-sudo usermod -a -G mediacenter sportarr
+sudo usermod -a -G mediacenter sonarr
 
 # Make directories
-sudo mkdir -pv ${CONFIG_DIR}/config/{sonarr,radarr,lidarr,mylar,prowlarr,qbittorrent,jackett,audiobookshelf,seerr,plex,jellyfin,tautulli,sabnzbd,bazarr,sportarr}-config
-sudo mkdir -pv ${DATA_DIR}/data/{torrents,usenet,media}/{tv,movies,music,books,comics,audiobooks,podcasts,audiobookshelf-metadata,sports}
+sudo mkdir -p ${CONFIG_DIR}/{bazarr,jellyfin,prowlarr,qbittorrent,radarr,sabnzbd,seerr,sonarr}-config
+sudo mkdir -p ${DATA_DIR}/data/{{media,torrents}/{movies,music,tv},usenet/{complete/{movies,music,tv},incomplete}}
 
 # Set permissions
 sudo chmod -R 775 ${DATA_DIR}/data/
-sudo chmod -R 775 ${CONFIG_DIR:-.}/config/
+sudo chmod -R 775 ${CONFIG_DIR}/
 sudo chown -R $UID:mediacenter ${DATA_DIR}/data/
-sudo chown -R $UID:mediacenter ${CONFIG_DIR}/config/
-sudo chown -R sonarr:mediacenter ${CONFIG_DIR}/config/sonarr-config
-sudo chown -R radarr:mediacenter ${CONFIG_DIR}/config/radarr-config
-sudo chown -R lidarr:mediacenter ${CONFIG_DIR}/config/lidarr-config
-sudo chown -R mylar:mediacenter ${CONFIG_DIR}/config/mylar-config
-sudo chown -R prowlarr:mediacenter ${CONFIG_DIR}/config/prowlarr-config
-sudo chown -R qbittorrent:mediacenter ${CONFIG_DIR}/config/qbittorrent-config
-sudo chown -R jackett:mediacenter ${CONFIG_DIR}/config/jackett-config
+sudo chown -R $UID:mediacenter ${CONFIG_DIR}/
+sudo chown -R bazarr:mediacenter ${CONFIG_DIR}/bazarr-config
+sudo chown -R $UID:mediacenter ${CONFIG_DIR}/jellyfin-config
+sudo chown -R prowlarr:mediacenter ${CONFIG_DIR}/prowlarr-config
+sudo chown -R qbittorrent:mediacenter ${CONFIG_DIR}/qbittorrent-config
+sudo chown -R radarr:mediacenter ${CONFIG_DIR}/radarr-config
+sudo chown -R sabnzbd:mediacenter ${CONFIG_DIR}/sabnzbd-config
 # The Seerr container uses 1000:1000
 # See https://docs.seerr.dev/migration-guide/?kubernetes-values=old#config-folder-permissions
-sudo chown -R $UID:$GID ${CONFIG_DIR}/config/seerr-config
-sudo chown -R plex:mediacenter ${CONFIG_DIR}/config/plex-config
-sudo chown -R $UID:mediacenter ${CONFIG_DIR}/config/jellyfin-config
-sudo chown -R $UID:mediacenter ${CONFIG_DIR}/config/tautulli-config
-sudo chown -R sabnzbd:mediacenter ${CONFIG_DIR}/config/sabnzbd-config
-sudo chown -R bazarr:mediacenter ${CONFIG_DIR}/config/bazarr-config
-sudo chown -R audiobookshelf:mediacenter ${CONFIG_DIR}/config/audiobookshelf-config
-sudo chown -R sportarr:mediacenter ${CONFIG_DIR}/config/sportarr-config
+sudo chown -R $UID:$GID ${CONFIG_DIR}/seerr-config
+sudo chown -R sonarr:mediacenter ${CONFIG_DIR}/sonarr-config
 
 echo "Done! It is recommended to reboot now."
